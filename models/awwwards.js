@@ -8,6 +8,16 @@ class Awwwards {
     this.getSiteUrl()
   }
 
+  static junk() {
+    let today = new Date();
+    let month = today.getMonth();
+    let day = today.getDate();
+    let year = today.getFullYear();
+    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+    return `<b>Site of the Day</b> ${monthNames[month]} ${day} ${year}`
+  }
+
   getSiteUrl() {
     https.get('https://www.awwwards.com', (resp) => {
       let data = '';
@@ -39,10 +49,13 @@ class Awwwards {
 
       resp.on('end', () => {
         let newDom = new dom().parseFromString(data);
-        let imagepath = xpath.select("//div[contains(@id, 'screenshots')]//img", newDom);
-        let nodes2 = xpath.select("//div[contains(@class, 'box-page-related')]//video//source", newDom);
 
-        this.parseMedia(imagepath, nodes2);
+        //let date = this.constructor.junk();
+        let title = xpath.select("//h1[contains(@class, 'heading-large')]/a", newDom);
+        let imagepath = xpath.select("//div[contains(@id, 'screenshots')]//img", newDom);
+        let videopath = xpath.select("//div[contains(@class, 'box-page-related')]//video//source", newDom);
+
+        this.parseMedia(imagepath, videopath, title);
       }).on("error", (err) => {
 
         console.log("Error: " + err.message);
@@ -50,9 +63,9 @@ class Awwwards {
     })
   }
 
-  static parseMedia(images, video) {
+  static parseMedia(images, video, title) {
     let shuffleArr = [];
-
+//debugger
     for (var i of images) {
       shuffleArr.push({
         type: "photo",
@@ -74,20 +87,25 @@ class Awwwards {
     // video[0].attributes[0].nodeValue
     //return shuffleArr;
 
-    this.printMessages(shuffleArr);
+    let _date = new Date();
+    let month = _date.getMonth();
+    let day = _date.getDate();
+    let year = _date.getFullYear();
+    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const today = ` <b>awwwwards.</b> <b>Site of the Day</b> \n${monthNames[month]} ${day} ${year}`;
+
+    this.printMessages(shuffleArr, title, today);
   }
 
-  static printMessages(mediaObject) {
-    bot.sendMessage(process.env.COMMUNITYID, 'Awwwards Site of the day!')
+  static printMessages(mediaObject, title, today) {
 
-    bot.sendMediaGroup(process.env.COMMUNITYID, [
+
+    bot.sendMessage(process.env.COMMUNITYID, `${today} ${title}`, {parse_mode: 'HTML'})
+
+    /*bot.sendMediaGroup(process.env.COMMUNITYID, [
       {
-        type: 'photo',
-        media: 'https://assets.awwwards.com/awards/sites_of_the_day/2018/11/kopke-since-1638-1.jpg'
-      },
-      {
-        type: 'photo',
-        media: 'https://assets.awwwards.com/awards/sites_of_the_day/2018/11/kopke-since-1638-1.jpg'
+        type: 'video',
+        media: 'https://assets.awwwards.com/awards/external/2018/11/5bfc29cadffb7.mp4'
       },
       {
         type: 'video',
@@ -97,7 +115,7 @@ class Awwwards {
         type: 'video',
         media: 'https://assets.awwwards.com/awards/external/2018/11/5bfc29cadffb7.mp4'
       }
-    ]);
+    ]);*/
   }
 }
 

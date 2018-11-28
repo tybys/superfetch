@@ -3,6 +3,7 @@
 const bot = require('../bot');
 const Dribbble = require('../models/dribbble');
 const Awwwards = require('../models/awwwards');
+const Behance = require('../models/behance');
 
 bot.onText(/\/start/, (msg, match) => {
   //bot.sendMessage(msg.chat.id, 'dribbble fetching started');
@@ -26,4 +27,5 @@ bot.on('message', (msg) => {
 });
 
 //new Dribbble();
-new Awwwards();
+//new Awwwards();
+new Behance();
