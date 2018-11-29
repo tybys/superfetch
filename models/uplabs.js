@@ -1,8 +1,8 @@
 const https = require('https');
 const bot = require('../bot');
 const fs = require('fs');
+const stream = fs.createWriteStream(`${__dirname}/uplabs.txt`, {flags:'a'});
 
-let datas = [];
 class Uplabs {
   constructor() {
     this.receiveJson()
@@ -37,48 +37,34 @@ class Uplabs {
     array = array.splice(0, 5);
 
     this.checkForUniq(array);
-    //this.messages(array);
   }
 
   checkForUniq(array) {
-    /*let hashes = array.map(function(item, index, array) {
-      return item.id;
-    });
+    let _this = this;
+    let uniqArray = [];
+    let fileContents = fs.readFileSync(`${__dirname}/uplabs.txt`);
 
-    hashes.toString();
-    hashes += ',';*/
-
-    fs.readFile(`${__dirname}/uplabs.txt`, function (err, data) {
-      if (err) throw err;
-
-      /*var ids = data.toString().split(',');
-      ids.splice(-1, 1);*/
-
-      for (let i of array) {
-        if (data.toString().indexOf(i.id) < 0) {
-          //console.log(i.id)
-          i.id += ',';
-          fs.appendFile(`${__dirname}/uplabs.txt`, i.id, function (err) {
-            if (err) throw err;
-            console.log('The "data to append" was appended to file!', i.link_url);
-          });
-        }
+    for (let i of array) {
+      if (fileContents.toString().indexOf(i.id) < 0) {
+        i.id += ',';
+        uniqArray.push(i);
+        stream.write(i.id);
       }
-    });
+    }
 
-    // debugger
-
+    stream.end();
+    _this.constructor.messages(uniqArray);
   }
 
-  messages(array) {
+  static messages(array) {
+    bot.sendMessage(process.env.COMMUNITYID, 'uplabs popular');
     for (var i of array) {
       bot.sendMediaGroup(process.env.COMMUNITYID, [{
         type: "photo",
         media: i.animated_teaser_url,
-        caption: `<a href="https://dribbble.com${i.link_url}">${i.name}</a>`,
+        caption: `<a href="${i.link_url}">${i.name}</a>`,
         parse_mode: 'HTML'
-      }
-      ])
+      }]);
     }
   }
 }

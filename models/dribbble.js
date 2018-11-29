@@ -2,8 +2,9 @@ const bot = require('../bot');
 const https = require('https');
 const xpath = require('xpath');
 const dom = require('xmldom').DOMParser;
+const fs = require('fs');
+const stream = fs.createWriteStream(`${__dirname}/dribbble.txt`, {flags:'a'});
 
-let datas = [];
 class Dribbble {
   constructor() {
     this.getRecent();
@@ -18,11 +19,7 @@ class Dribbble {
       });
 
       resp.on('end', () => {
-        this.constructor.parseData(data).then((data) => {
-          this.constructor.sortMessages(datas).then((data) => {
-            this.constructor.printMessages(data);
-          });
-        });
+        this.parseRawHtml(data);
       });
 
     }).on("error", (err) => {
@@ -30,18 +27,20 @@ class Dribbble {
       console.log("Error: " + err.message);
     });
   }
-  static async parseData(raw) {
+
+  parseRawHtml(raw) {
     const sourceHtml = raw;
     let newDom = new dom().parseFromString(raw);
     let nodes = xpath.select("//script", newDom);
     let imageNoes = xpath.select("//a[contains(@class, 'dribbble-link')]//img", newDom);
     let photosArr = new Object();
+    let datas = [];
 
     imageNoes.map(function (item, index, imageNoes) {
       photosArr[item.attributes[1].nodeValue.split('/')[6]] = item.attributes[1].nodeValue;
     });
 
-    await nodes.filter((item, i, nodes) => {
+    nodes.filter((item, i, nodes) => {
       let images = photosArr;
       if (item.textContent.indexOf('newestShots') > 0) {
         let scripttag2 = item.childNodes[0].data;
@@ -70,25 +69,46 @@ class Dribbble {
         }
       }
     });
+
+    this.sortMessages(datas);
   }
-  static async sortMessages(unsortArr) {
+
+  sortMessages(unsortArr) {
     function compareNumeric(a, b) {
       if (a.likes_count > b.likes_count) return -1;
       if (a.likes_count < b.likes_count) return 1;
     }
 
-    await unsortArr.sort(compareNumeric);
+    unsortArr.sort(compareNumeric);
+    unsortArr = unsortArr.splice(0, 5);
 
-    return unsortArr;
+    this.checkForUniq(unsortArr);
   }
-  static printMessages(shotsArray) {
-    bot.sendMessage(process.env.COMMUNITYID, 'Hello from Dribbble!');
 
-    for (let i = 0; i < 5; i ++) {
+  checkForUniq(array) {
+    let _this = this;
+    let uniqArray = [];
+
+    let fileContents = fs.readFileSync(`${__dirname}/dribbble.txt`);
+
+    for (let i of array) {
+      if (fileContents.toString().indexOf(i.id) < 0) {
+        i.id += ',';
+        uniqArray.push(i);
+        stream.write(i.id);
+      }
+    }
+
+    stream.end();
+    this.printMessages(uniqArray);
+  }
+
+  printMessages(shotsArray) {
+    for (var i of shotsArray) {
       bot.sendMediaGroup(process.env.COMMUNITYID, [{
         type: "photo",
-        media: shotsArray[i].image,
-        caption: `<a href="https://dribbble.com${shotsArray[i].path}">${shotsArray[i].title}</a>`,
+        media: i.image,
+        caption: `<a href="https://dribbble.com${i.path}">${i.title}</a>`,
         parse_mode: 'HTML'
       }
       ])
