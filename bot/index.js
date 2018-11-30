@@ -6,6 +6,51 @@ const Awwwards = require('../models/awwwards');
 const Behance = require('../models/behance');
 const Uplabs = require('../models/uplabs');
 
+var CronJob = require('cron').CronJob;
+
+/**
+ * Start all CRON jobs
+ */
+bot.onText(/\/startall/, (msg, match) => {
+
+});
+/**
+ * Stop all CRON jobs
+ */
+bot.onText(/\/stopall/, (msg, match) => {
+
+});
+/**
+ * Start only Dribbble
+ * each hour between 10am-22pm
+ */
+bot.onText(/\/dribbble/, (msg, match) => {
+  new CronJob('*/1 * * * *', function() {
+    //console.log('You will see this message every second');
+    new Dribbble();
+  }, null, true, 'Europe/Moscow');
+});
+/**
+ * Start only Awwwards
+ * each day at 12am
+ */
+bot.onText(/\/awwwards/, (msg, match) => {
+  new CronJob('*/2 * * * *', function() {
+    //console.log('You will see this message every second');
+    new Awwwards();
+  }, null, true, 'Europe/Moscow');
+});
+/**
+ * Start only Uplabs
+ * each hour between 10am-22pm
+ */
+bot.onText(/\/uplabs/, (msg, match) => {
+  new CronJob('*/1 * * * *', function() {
+    //console.log('You will see this message every second');
+    new Uplabs();
+  }, null, true, 'Europe/Moscow');
+});
+
 bot.onText(/\/start/, (msg, match) => {
   //bot.sendMessage(msg.chat.id, 'dribbble fetching started');
 });
@@ -27,7 +72,8 @@ bot.on('message', (msg) => {
   bot.sendMessage(chatId, 'Received your message');
 });
 
-new Dribbble();
+// new Dribbble();
 //new Awwwards();
 // new Behance();
 //new Uplabs();
+

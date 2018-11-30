@@ -11,7 +11,9 @@ class Dribbble {
   }
 
   getRecent() {
-    https.get('https://dribbble.com/shots?page=1&per_page=24', (resp) => {
+    // https://dribbble.com/shots?sort=recent&page=0&per_page=24
+    // https://dribbble.com/shots?page=1&per_page=24
+    https.get('https://dribbble.com/shots?sort=recent&page=0&per_page=24', (resp) => {
       let data = '';
 
       resp.on('data', (chunk) => {
@@ -99,7 +101,7 @@ class Dribbble {
       }
     }
 
-    stream.end();
+    // stream.end();
     this.printMessages(uniqArray);
   }
 
