@@ -25,7 +25,6 @@ class Dribbble {
       });
 
     }).on("error", (err) => {
-
       console.log("Error: " + err.message);
     });
   }
