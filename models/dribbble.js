@@ -4,6 +4,7 @@ const xpath = require('xpath');
 const dom = require('xmldom').DOMParser;
 const fs = require('fs');
 const stream = fs.createWriteStream(`${__dirname}/dribbble.txt`, {flags:'a'});
+const proxy = require('../proxy');
 
 class Dribbble {
   constructor() {
@@ -13,7 +14,8 @@ class Dribbble {
   getRecent() {
     // https://dribbble.com/shots?sort=recent&page=0&per_page=24
     // https://dribbble.com/shots?page=1&per_page=24
-    https.get('https://dribbble.com/shots?sort=recent&page=0&per_page=24', (resp) => {
+    // https://dribbble.com/shots?sort=recent&page=0&per_page=24
+    https.get(proxy.endpoint('https://dribbble.com/shots?sort=recent&page=0&per_page=24'), (resp) => {
       let data = '';
 
       resp.on('data', (chunk) => {
@@ -24,9 +26,13 @@ class Dribbble {
         this.parseRawHtml(data);
       });
 
+      resp.pipe(process.stdout);
+
     }).on("error", (err) => {
       console.log("Error: " + err.message);
     });
+
+
   }
 
   parseRawHtml(raw) {

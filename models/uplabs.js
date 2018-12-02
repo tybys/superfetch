@@ -2,6 +2,7 @@ const https = require('https');
 const bot = require('../bot');
 const fs = require('fs');
 const stream = fs.createWriteStream(`${__dirname}/uplabs.txt`, {flags:'a'});
+const proxy = require('../proxy');
 
 class Uplabs {
   constructor() {
@@ -9,7 +10,7 @@ class Uplabs {
   }
 
   receiveJson() {
-    https.get('https://www.uplabs.com/all.json?days_ago=0&page=1', (resp) => {
+    https.get(proxy.endpoint('https://www.uplabs.com/all.json?days_ago=0&page=1'), (resp) => {
       let data = '';
 
       resp.on('data', (chunk) => {

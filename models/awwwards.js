@@ -2,6 +2,7 @@ const bot = require('../bot');
 const https = require('https');
 const xpath = require('xpath');
 const dom = require('xmldom').DOMParser;
+const proxy = require('../proxy');
 
 class Awwwards {
   constructor() {
@@ -19,7 +20,7 @@ class Awwwards {
   }
 
   getSiteUrl() {
-    https.get('https://www.awwwards.com', (resp) => {
+    https.get(proxy.endpoint('https://www.awwwards.com'), (resp) => {
       let data = '';
 
       resp.on('data', (chunk) => {

@@ -110,10 +110,10 @@ bot.on('message', (msg) => {
   bot.sendMessage(chatId, 'Received your message');
 });
 
-// new Dribbble();
+//new Dribbble();
 //new Awwwards();
 // new Behance();
-//new Uplabs();
+new Uplabs();
 
 
 /*
