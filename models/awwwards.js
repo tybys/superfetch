@@ -66,7 +66,7 @@ class Awwwards {
 
   static parseMedia(images, video, title) {
     let shuffleArr = [];
-//debugger
+// debugger
     for (var i of images) {
       shuffleArr.push({
         type: "photo",
@@ -76,14 +76,14 @@ class Awwwards {
       });
     }
 
-    for (var j of video) {
+    /*for (var j of video) {
       shuffleArr.push({
         type: "video",
         media: j.attributes[0].value,
         caption: '',
         parse_mode: 'HTML'
       });
-    }
+    }*/
     // images[0].attributes[3].nodeValue
     // video[0].attributes[0].nodeValue
     //return shuffleArr;
@@ -99,10 +99,8 @@ class Awwwards {
   }
 
   static printMessages(mediaObject, title, today) {
-
-
     bot.sendMessage(process.env.COMMUNITYID, `${today} ${title}`, {parse_mode: 'HTML'})
-
+    bot.sendMediaGroup(process.env.COMMUNITYID, mediaObject);
     /*bot.sendMediaGroup(process.env.COMMUNITYID, [
       {
         type: 'video',

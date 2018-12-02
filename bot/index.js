@@ -111,9 +111,9 @@ bot.on('message', (msg) => {
 });
 
 //new Dribbble();
-//new Awwwards();
+new Awwwards();
 // new Behance();
-new Uplabs();
+//new Uplabs();
 
 
 /*
