@@ -57,8 +57,8 @@ class Uplabs {
     _this.constructor.messages(uniqArray);
   }
 
-  static messages(array) {
-    bot.sendMessage(process.env.COMMUNITYID, 'uplabs popular');
+  static async messages(array) {
+    await bot.sendMessage(process.env.COMMUNITYID, 'uplabs popular');
     for (var i of array) {
       bot.sendMediaGroup(process.env.COMMUNITYID, [{
         type: "photo",

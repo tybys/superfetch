@@ -110,7 +110,8 @@ class Dribbble {
     this.printMessages(uniqArray);
   }
 
-  printMessages(shotsArray) {
+  async printMessages(shotsArray) {
+    await bot.sendMessage(process.env.COMMUNITYID, `<b>Recent dribbble Shots!</b>`, {parse_mode: 'HTML'});
     for (var i of shotsArray) {
       bot.sendMediaGroup(process.env.COMMUNITYID, [{
         type: "photo",

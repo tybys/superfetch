@@ -6,7 +6,8 @@ const proxy = require('../proxy');
 
 class Awwwards {
   constructor() {
-    this.getSiteUrl()
+    this.getSiteUrl();
+    this.siteUrl = '';
   }
 
   static junk() {
@@ -41,6 +42,8 @@ class Awwwards {
   }
 
   static getSiteOfTheDay(url) {
+    this.constructor.siteUrl = `https://www.awwwards.com${url}`;
+
     https.get(`https://www.awwwards.com${url}`, (resp) => {
       let data = '';
 
@@ -67,23 +70,23 @@ class Awwwards {
   static parseMedia(images, video, title) {
     let shuffleArr = [];
 // debugger
-    for (var i of images) {
+    /*for (var i of images) {
       shuffleArr.push({
         type: "photo",
         media: i.attributes[3].nodeValue,
         caption: '',
         parse_mode: 'HTML'
       });
-    }
+    }*/
 
-    /*for (var j of video) {
+    for (var j of video) {
       shuffleArr.push({
         type: "video",
         media: j.attributes[0].value,
         caption: '',
         parse_mode: 'HTML'
       });
-    }*/
+    }
     // images[0].attributes[3].nodeValue
     // video[0].attributes[0].nodeValue
     //return shuffleArr;
@@ -98,23 +101,9 @@ class Awwwards {
     this.printMessages(shuffleArr, title, today);
   }
 
-  static printMessages(mediaObject, title, today) {
-    bot.sendMessage(process.env.COMMUNITYID, `${today} ${title}`, {parse_mode: 'HTML'})
+  static async printMessages(mediaObject, title, today) {
+    await bot.sendMessage(process.env.COMMUNITYID, `${today} ${this.constructor.siteUrl}`, {parse_mode: 'HTML'});
     bot.sendMediaGroup(process.env.COMMUNITYID, mediaObject);
-    /*bot.sendMediaGroup(process.env.COMMUNITYID, [
-      {
-        type: 'video',
-        media: 'https://assets.awwwards.com/awards/external/2018/11/5bfc29cadffb7.mp4'
-      },
-      {
-        type: 'video',
-        media: 'https://assets.awwwards.com/awards/external/2018/11/5bfc29cadffb7.mp4'
-      },
-      {
-        type: 'video',
-        media: 'https://assets.awwwards.com/awards/external/2018/11/5bfc29cadffb7.mp4'
-      }
-    ]);*/
   }
 }
 
