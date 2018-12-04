@@ -39,16 +39,19 @@ class Dribbble {
     const sourceHtml = raw;
     let newDom = new dom().parseFromString(raw);
     let nodes = xpath.select("//script", newDom);
-    let imageNoes = xpath.select("//a[contains(@class, 'dribbble-link')]//img", newDom);
+    let imageNoes = xpath.select("//a[contains(@class, 'dribbble-link')]//source", newDom);
     let photosArr = new Object();
     let datas = [];
 
     imageNoes.map(function (item, index, imageNoes) {
-      photosArr[item.attributes[1].nodeValue.split('/')[6]] = item.attributes[1].nodeValue;
+      photosArr[item.attributes[0].nodeValue.split('/')[6]] = item.attributes[0].nodeValue;
     });
+
+
 
     nodes.filter((item, i, nodes) => {
       let images = photosArr;
+
       if (item.textContent.indexOf('newestShots') > 0) {
         let scripttag2 = item.childNodes[0].data;
 
@@ -68,7 +71,8 @@ class Dribbble {
           delete i.attachments_count;
           delete i.view_count;
 
-          i.image = images[i.id]
+          i.image = images[i.id].replace(/_teaser/i, '');
+          //i.image = images[i.id].substring(images[i.id].indexOf('_teaser'), 7);
 
           if (!datas.find(x => x.id === i.id)) {
             datas.push(i);
@@ -110,13 +114,15 @@ class Dribbble {
     this.printMessages(uniqArray);
   }
 
-  async printMessages(shotsArray) {
-    await bot.sendMessage(process.env.COMMUNITYID, `<b>Recent dribbble Shots!</b>`, {parse_mode: 'HTML'});
+  printMessages(shotsArray) {
+    if (!shotsArray.length) return;
+
+    //await bot.sendMessage(process.env.COMMUNITYID, `<b>Recent dribbble Shots!</b>`, {parse_mode: 'HTML'});
     for (var i of shotsArray) {
       bot.sendMediaGroup(process.env.COMMUNITYID, [{
         type: "photo",
         media: i.image,
-        caption: `<a href="https://dribbble.com${i.path}">${i.title}</a>`,
+        caption: `<b>Dribbble Recent Shots</b>\n<a href="https://dribbble.com${i.path}">${i.title}</a>`,
         parse_mode: 'HTML'
       }
       ])

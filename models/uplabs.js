@@ -57,13 +57,15 @@ class Uplabs {
     _this.constructor.messages(uniqArray);
   }
 
-  static async messages(array) {
-    await bot.sendMessage(process.env.COMMUNITYID, 'uplabs popular');
+  static messages(array) {
+    if (array.length) return;
+
+    //await bot.sendMessage(process.env.COMMUNITYID, 'uplabs popular');
     for (var i of array) {
       bot.sendMediaGroup(process.env.COMMUNITYID, [{
         type: "photo",
         media: i.animated_teaser_url,
-        caption: `<a href="${i.link_url}">${i.name}</a>`,
+        caption: `<b>Uplabs Popular</b>\n<a href="${i.link_url}">${i.name}</a>`,
         parse_mode: 'HTML'
       }]);
     }

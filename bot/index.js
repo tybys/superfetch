@@ -10,10 +10,10 @@ const cron = require('node-cron');
 const Nexmo = require('nexmo')
 
 const tasks = [
- // {id: "Test", mask: "* * * * * *", process: sendMessage, pid: null},
+  {id: "Test", mask: "* * * * * *", process: sendMessage, pid: null},
   {id: "Dribbble", mask: "*/2 * * * *", process: dribbbleJob, pid: null},
-  {id: "Awwwards", mask: "*/1 * * * *", process: awwwardsJob, pid: null},
-  {id: "Uplabs", mask: "*/3 * * * *", process: uplabsJob, pid: null}
+  {id: "Awwwards", mask: "*/5 * * * *", process: awwwardsJob, pid: null},
+  {id: "Uplabs", mask: "*/7 * * * *", process: uplabsJob, pid: null}
 ];
 
 function sendMessage() {
@@ -73,6 +73,7 @@ bot.onText(/\/dribbble/, (msg, match) => {
   /*cron.schedule(tasks.id['Dribbble'], () => {
     console.log('running a task every minute');
   });*/
+  tasks[0].pid = cron.schedule(tasks[0].mask, tasks[0].process, {schedule: true});
 });
 /**
  * Start only Awwwards
@@ -111,9 +112,9 @@ bot.on('message', (msg) => {
 });
 
 //new Dribbble();
-new Awwwards();
+//new Awwwards();
 // new Behance();
-//new Uplabs();
+new Uplabs();
 
 
 /*
