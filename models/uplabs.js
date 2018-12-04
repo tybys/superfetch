@@ -53,12 +53,12 @@ class Uplabs {
       }
     }
 
-    stream.end();
+    //stream.end();
     _this.constructor.messages(uniqArray);
   }
 
   static messages(array) {
-    if (array.length) return;
+    //if (array.length) return;
 
     //await bot.sendMessage(process.env.COMMUNITYID, 'uplabs popular');
     for (var i of array) {
