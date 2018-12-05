@@ -8,9 +8,16 @@ const cron = require('node-cron');
 const Nexmo = require('nexmo')
 var schedule = require('node-schedule');
 
+/*const tasks = [
+  {name: "dribbble", mask: "* * 10-23 * * *", process: dribbbleJob},
+  {name: "uplabs", mask: "* * 10-23 * * *", process: uplabsJob},
+  {name: "uplabs", mask: "* 30 14 * * *", process: awwwardsJob}
+];*/
+
 const tasks = [
-  {name: "dribbble", mask: "0 * 10-23 * * *", process: dribbbleJob},
-  {name: "uplabs", mask: "0 * 10-23 * * *", process: uplabsJob}
+  {name: "dribbble", mask: "10 * 10-23 * * *", process: one},
+  {name: "uplabs", mask: "20 * 10-23 * * *", process: two},
+  {name: "uplabs", mask: "0 30 14 * * *", process: three}
 ];
 
 function dribbbleJob() {
@@ -36,6 +43,16 @@ function uplabsJob() {
     bot.sendMessage(process.env.BOTID, 'Проблемы с Аплабс!');
     throw e;
   }
+}
+
+function one() {
+  console.log('every 10s\none')
+}
+function two() {
+  console.log('every 20s\ntwo')
+}
+function three() {
+  console.log('once time\nthree')
 }
 
 /**
