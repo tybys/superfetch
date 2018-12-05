@@ -1,5 +1,3 @@
-// TODO: подумать о — awwwards Site of the day, отсылать альбомом с ссылкой на работу
-
 const bot = require('../bot');
 const Dribbble = require('../models/dribbble');
 const Awwwards = require('../models/awwwards');
@@ -8,17 +6,13 @@ const Uplabs = require('../models/uplabs');
 const cron = require('node-cron');
 
 const Nexmo = require('nexmo')
+var schedule = require('node-schedule');
 
 const tasks = [
-  //{id: "Test", mask: "* * * * * *", process: sendMessage, pid: null},
-  {id: "Dribbble", mask: "*/50 * * * *", process: dribbbleJob, pid: null},
-  {id: "Awwwards", mask: "0 16 * * *", process: awwwardsJob, pid: null},
-  {id: "Uplabs", mask: "*/60 * * * *", process: uplabsJob, pid: null}
+  {name: "dribbble", mask: "0 * 10-23 * * *", process: dribbbleJob},
+  {name: "uplabs", mask: "0 * 10-23 * * *", process: uplabsJob}
 ];
 
-function sendMessage() {
-  console.log("Message was send...");
-}
 function dribbbleJob() {
   try {
     new Dribbble();
@@ -45,35 +39,25 @@ function uplabsJob() {
 }
 
 /**
- * Start all CRON jobs
+ * Start all tasks
  */
 bot.onText(/\/startall/, (msg, match) => {
   tasks.forEach(task => {
-    console.log("Lunching: " + task.id + " (" + task.mask + ")");
-    task.pid = cron.schedule(task.mask, task.process, { scheduled: true });
-    task.pid.start();
+    schedule.scheduleJob(task.mask, task.process)
   });
 });
 /**
- * Stop all CRON jobs
+ * Stop all tasks
  */
 bot.onText(/\/stopall/, (msg, match) => {
-  tasks.forEach(task => {
-    //console.log("Lunching: " + task.id + " (" + task.mask + ")");
-    //task.pid = cron.schedule(task.mask, task.process, { scheduled: true });
-    task.pid.stop();
-  });
+
 });
 /**
  * Start only Dribbble
  * each hour between 10am-22pm
  */
 bot.onText(/\/dribbble/, (msg, match) => {
-  //tasks[0].pid = cron.schedule(tasks[0].mask, tasks[0].process, { scheduled: true })
-  /*cron.schedule(tasks.id['Dribbble'], () => {
-    console.log('running a task every minute');
-  });*/
-  tasks[0].pid = cron.schedule(tasks[0].mask, tasks[0].process, {schedule: true});
+
 });
 /**
  * Start only Awwwards
