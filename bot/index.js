@@ -5,20 +5,26 @@ const Behance = require('../models/behance');
 const Uplabs = require('../models/uplabs');
 const cron = require('node-cron');
 
-const Nexmo = require('nexmo')
+const Nexmo = require('nexmo');
 var schedule = require('node-schedule');
 
-const tasks = [
-  {name: "dribbble", mask: "0 0 10-23 * * *", process: dribbbleJob},
-  {name: "uplabs", mask: "0 0 10-23 * * *", process: uplabsJob},
-  {name: "uplabs", mask: "0 30 15 * * *", process: awwwardsJob}
-];
+let tasks = [];
 
-/*const tasks = [
-  {name: "dribbble", mask: "10 * 10-23 * * *", process: one},
-  {name: "uplabs", mask: "20 * 10-23 * * *", process: two},
-  {name: "uplabs", mask: "0 30 14 * * *", process: three}
-];*/
+/*if (process.env.NODE_ENV === 'production') {
+  const tasks = [
+    {name: "dribbble", mask: "0 0 10-23 * * *", process: dribbbleJob},
+    {name: "uplabs", mask: "0 0 10-23 * * *", process: uplabsJob},
+    {name: "uplabs", mask: "0 30 15 * * *", process: awwwardsJob}
+  ];
+}*/
+
+if (process.env.NODE_ENV == 'debug') {
+    tasks = [
+        {name: "dribbble", mask: "0 */3 * * * *", process: dribbbleJob},
+        {name: "uplabs", mask: "0 */3 * * * *", process: uplabsJob},
+        {name: "uplabs", mask: "0 */3 * * * *", process: awwwardsJob}
+    ];
+}
 
 function dribbbleJob() {
   try {

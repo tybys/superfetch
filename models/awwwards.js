@@ -82,7 +82,7 @@ class Awwwards {
     for (var j of video) {
       shuffleArr.push({
         type: "video",
-        media: j.attributes[0].value,
+        media: j.attributes[1].value,
         caption: '',
         parse_mode: 'HTML'
       });
