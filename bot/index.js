@@ -120,9 +120,10 @@ bot.on('message', (msg) => {
   bot.sendMessage(chatId, 'Received your message');
 });
 
+
 //new Dribbble();
 //new Awwwards();
-// new Behance();
+//new Behance();
 //new Uplabs();
 
 
@@ -133,3 +134,6 @@ const nexmo = new Nexmo({
 });
 
 nexmo.message.sendSms('multifetch', '', text)*/
+
+//TODO: порядок постинга между поставщиками
+//TODO: каждый день сохранять во временном файле сайт от эвордс, периодически показывать его в течении дня

@@ -21,7 +21,8 @@ class Awwwards {
   }
 
   getSiteUrl() {
-    https.get(proxy.endpoint('https://www.awwwards.com'), (resp) => {
+    https.get(proxy.endpoint('https://www.awwwards.com/'), (resp) => {
+      // debugger
       let data = '';
 
       resp.on('data', (chunk) => {
@@ -31,7 +32,9 @@ class Awwwards {
       resp.on('end', () => {
         let newDom = new dom().parseFromString(data);
         let nodes = xpath.select("//a[contains(@class, 'site-link')]/@href", newDom);
-        // debugger
+        //let nodes = xpath.select("//*[@class='logo-header']", newDom)
+
+
         this.constructor.getSiteOfTheDay(nodes[0].nodeValue);
         //let imageNoes = xpath.select("//a[contains(@class, 'dribbble-link')]//img", newDom);
       }).on("error", (err) => {
