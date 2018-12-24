@@ -34,7 +34,6 @@ class Awwwards {
         let nodes = xpath.select("//a[contains(@class, 'site-link')]/@href", newDom);
         //let nodes = xpath.select("//*[@class='logo-header']", newDom)
 
-
         this.constructor.getSiteOfTheDay(nodes[0].nodeValue);
         //let imageNoes = xpath.select("//a[contains(@class, 'dribbble-link')]//img", newDom);
       }).on("error", (err) => {
