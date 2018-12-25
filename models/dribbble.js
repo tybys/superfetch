@@ -12,9 +12,6 @@ class Dribbble {
   }
 
   getRecent() {
-    // https://dribbble.com/shots?sort=recent&page=0&per_page=24
-    // https://dribbble.com/shots?page=1&per_page=24
-    // https://dribbble.com/shots?sort=recent&page=0&per_page=24
     https.get(proxy.endpoint('https://dribbble.com/shots?sort=recent&page=0&per_page=24'), (resp) => {
       let data = '';
 
@@ -31,8 +28,6 @@ class Dribbble {
     }).on("error", (err) => {
       console.log("Error: " + err.message);
     });
-
-
   }
 
   parseRawHtml(raw) {
@@ -46,8 +41,6 @@ class Dribbble {
     imageNoes.map(function (item, index, imageNoes) {
       photosArr[item.attributes[0].nodeValue.split('/')[6]] = item.attributes[0].nodeValue;
     });
-
-
 
     nodes.filter((item, i, nodes) => {
       let images = photosArr;
@@ -72,7 +65,6 @@ class Dribbble {
           delete i.view_count;
 
           i.image = images[i.id].replace(/_teaser/i, '');
-          //i.image = images[i.id].substring(images[i.id].indexOf('_teaser'), 7);
 
           if (!datas.find(x => x.id === i.id)) {
             datas.push(i);
@@ -110,14 +102,12 @@ class Dribbble {
       }
     }
 
-    // stream.end();
     this.printMessages(uniqArray);
   }
 
   printMessages(shotsArray) {
     if (!shotsArray.length) return;
 
-    //await bot.sendMessage(process.env.COMMUNITYID, `<b>Recent dribbble Shots!</b>`, {parse_mode: 'HTML'});
     for (var i of shotsArray) {
       bot.sendMediaGroup(process.env.COMMUNITYID, [{
         type: "photo",

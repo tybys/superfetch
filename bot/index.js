@@ -20,9 +20,9 @@ if (process.env.NODE_ENV == 'production') {
 
 if (process.env.NODE_ENV == 'debug') {
     tasks = [
-        {name: "dribbble", mask: "0 */3 * * * *", process: dribbbleJob},
-        {name: "uplabs", mask: "0 */3 * * * *", process: uplabsJob},
-        {name: "awwwards", mask: "0 */3 * * * *", process: awwwardsJob}
+        {name: "Dribbble", mask: "0 */1 * * * *", process: dribbbleJob},
+        {name: "Uplabs", mask: "0 */1 * * * *", process: uplabsJob}
+        //,{name: "awwwards", mask: "0 */3 * * * *", process: awwwardsJob}
     ];
 }
 
@@ -51,25 +51,15 @@ function uplabsJob() {
   }
 }
 
-function one() {
-  console.log('every 10s\none')
-}
-function two() {
-  console.log('every 20s\ntwo')
-}
-function three() {
-  console.log('once time\nthree')
-}
-
 /**
  * Start all tasks
  */
 bot.onText(/\/startall/, (msg, match) => {
   tasks.forEach(task => {
-    schedule.scheduleJob(task.mask, task.process)
+    schedule.scheduleJob(task.mask, task.process);
   });
 
-  bot.sendMessage(process.env.BOTID, 'start all')
+  bot.sendMessage(process.env.BOTID, 'start all');
 });
 /**
  * Stop all tasks
@@ -98,7 +88,6 @@ bot.onText(/\/awwwards/, (msg, match) => {
 bot.onText(/\/uplabs/, (msg, match) => {
 
 });
-
 bot.onText(/\/start/, (msg, match) => {
   //bot.sendMessage(msg.chat.id, 'dribbble fetching started');
 });
@@ -120,13 +109,6 @@ bot.on('message', (msg) => {
   bot.sendMessage(chatId, 'Received your message');
 });
 
-
-//new Dribbble();
-//new Awwwards();
-//new Behance();
-//new Uplabs();
-
-
 /*
 const nexmo = new Nexmo({
   apiKey: process.env.NEXMOAPIKEY,
@@ -137,4 +119,6 @@ nexmo.message.sendSms('multifetch', '', text)*/
 
 //TODO: порядок постинга между поставщиками
 //TODO: каждый день сохранять во временном файле сайт от эвордс, периодически показывать его в течении дня
-// new Awwwards();
+//TODO: присылать сообщения с небольшой задержкой, рандом от 3 до 10 секунд
+//TODO: убрать 3 одинаковые функции, унифицировать создание новых инстасов
+new Awwwards()

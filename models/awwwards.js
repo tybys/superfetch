@@ -3,6 +3,8 @@ const https = require('https');
 const xpath = require('xpath');
 const dom = require('xmldom').DOMParser;
 const proxy = require('../proxy');
+const fs = require('fs');
+const path = require('path');
 
 class Awwwards {
   constructor() {
@@ -22,7 +24,6 @@ class Awwwards {
 
   getSiteUrl() {
     https.get(proxy.endpoint('https://www.awwwards.com/'), (resp) => {
-      // debugger
       let data = '';
 
       resp.on('data', (chunk) => {
@@ -32,18 +33,15 @@ class Awwwards {
       resp.on('end', () => {
         let newDom = new dom().parseFromString(data);
         let nodes = xpath.select("//a[contains(@class, 'site-link')]/@href", newDom);
-        //let nodes = xpath.select("//*[@class='logo-header']", newDom)
 
-        this.constructor.getSiteOfTheDay(nodes[0].nodeValue);
-        //let imageNoes = xpath.select("//a[contains(@class, 'dribbble-link')]//img", newDom);
+        this.getSiteOfTheDay(nodes[0].nodeValue);
       }).on("error", (err) => {
-
         console.log("Error: " + err.message);
       });
     })
   }
 
-  static getSiteOfTheDay(url) {
+  getSiteOfTheDay(url) {
     this.constructor.siteUrl = `https://www.awwwards.com${url}`;
 
     https.get(`https://www.awwwards.com${url}`, (resp) => {
@@ -55,13 +53,14 @@ class Awwwards {
 
       resp.on('end', () => {
         let newDom = new dom().parseFromString(data);
-
-        //let date = this.constructor.junk();
         let title = xpath.select("//h1[contains(@class, 'heading-large')]/a", newDom);
         let imagepath = xpath.select("//div[contains(@id, 'screenshots')]//img", newDom);
         let videopath = xpath.select("//div[contains(@class, 'box-page-related')]//video//source", newDom);
 
-        this.parseMedia(imagepath, videopath, title);
+        // debugger
+        this.saveFiles(videopath).then(() => {
+          this.parseMedia(imagepath, title);
+        });
       }).on("error", (err) => {
 
         console.log("Error: " + err.message);
@@ -69,17 +68,32 @@ class Awwwards {
     })
   }
 
-  static parseMedia(images, video, title) {
-    let shuffleArr = [];
-// debugger
-    /*for (var i of images) {
-      shuffleArr.push({
-        type: "photo",
-        media: i.attributes[3].nodeValue,
-        caption: '',
-        parse_mode: 'HTML'
-      });
-    }*/
+  async saveFiles(paths) {
+    debugger
+		var fileName = "presentation.pcap";
+
+		var filePath = "/home/files/" + fileName;
+
+		fs.writeFile(filePath, data, function (err) {
+			if (err) {
+				//Error handling
+			} else {
+				console.log('Done');
+				res.download(filePath, fileName, function(err) {
+					console.log('download callback called');
+					if( err ) {
+						console.log('something went wrong');
+					}
+
+				}); // pass in the path to the newly created file
+			}
+		});
+
+		await console.log('jopa')
+  }
+
+  parseMedia(images, title) {
+    /*let shuffleArr = [];
 
     for (var j of video) {
       shuffleArr.push({
@@ -88,10 +102,7 @@ class Awwwards {
         caption: '',
         parse_mode: 'HTML'
       });
-    }
-    // images[0].attributes[3].nodeValue
-    // video[0].attributes[0].nodeValue
-    //return shuffleArr;
+    }*/
 
     let _date = new Date();
     let month = _date.getMonth();
@@ -100,11 +111,12 @@ class Awwwards {
     const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     const today = ` <b>awwwwards.</b> <b>Site of the Day</b> \n${monthNames[month]} ${day} ${year}`;
 
+    // debugger
     this.printMessages(shuffleArr, title, today);
   }
 
-  static async printMessages(mediaObject, title, today) {
-    await bot.sendMessage(process.env.COMMUNITYID, `${today} ${this.constructor.siteUrl}`, {parse_mode: 'HTML'});
+  printMessages(mediaObject, title, today) {
+    bot.sendMessage(process.env.COMMUNITYID, `${today} ${this.constructor.siteUrl}`, {parse_mode: 'HTML'});
     bot.sendMediaGroup(process.env.COMMUNITYID, mediaObject);
   }
 }
