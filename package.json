@@ -9,6 +9,7 @@
     "behance-api": "^1.1.4",
     "cron-job-manager": "^2.1.1",
     "dotenv": "^6.1.0",
+    "download-file": "^0.1.5",
     "https-proxy-agent": "^2.2.1",
     "nexmo": "^2.4.0",
     "node-cron": "^2.0.3",

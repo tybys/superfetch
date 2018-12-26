@@ -5,6 +5,9 @@ const dom = require('xmldom').DOMParser;
 const proxy = require('../proxy');
 const fs = require('fs');
 const path = require('path');
+const download = require('download-file');
+
+//const stream = (fn) => fs.createWriteStream(path.resolve('./downloads', fn), {flags:'a+', encoding: 'utf8'})
 
 class Awwwards {
   constructor() {
@@ -57,9 +60,8 @@ class Awwwards {
         let imagepath = xpath.select("//div[contains(@id, 'screenshots')]//img", newDom);
         let videopath = xpath.select("//div[contains(@class, 'box-page-related')]//video//source", newDom);
 
-        // debugger
         this.saveFiles(videopath).then(() => {
-          this.parseMedia(imagepath, title);
+					this.parseMedia(imagepath, title);
         });
       }).on("error", (err) => {
 
@@ -68,28 +70,22 @@ class Awwwards {
     })
   }
 
-  async saveFiles(paths) {
-    debugger
-		var fileName = "presentation.pcap";
+  async saveFiles(paths, cb) {
+		await paths.forEach((item, index) => {
+      let viduri = item.attributes[1].value;
+			let options = {
+				directory: process.cwd()+"/downloads/",
+				filename: `vid_${index}.mp4`
+			};
 
-		var filePath = "/home/files/" + fileName;
+			download(viduri, options, function(err){
+				if (err) throw err;
 
-		fs.writeFile(filePath, data, function (err) {
-			if (err) {
-				//Error handling
-			} else {
-				console.log('Done');
-				res.download(filePath, fileName, function(err) {
-					console.log('download callback called');
-					if( err ) {
-						console.log('something went wrong');
-					}
-
-				}); // pass in the path to the newly created file
-			}
+				console.log("meow")
+			});
 		});
 
-		await console.log('jopa')
+		//cb();
   }
 
   parseMedia(images, title) {
@@ -103,7 +99,9 @@ class Awwwards {
         parse_mode: 'HTML'
       });
     }*/
-
+    let fs = require('fs')
+    //let files = fs.readFileSync(process.cwd()+'/downloads/', {flag: 'r'});
+    debugger
     let _date = new Date();
     let month = _date.getMonth();
     let day = _date.getDate();
@@ -112,12 +110,12 @@ class Awwwards {
     const today = ` <b>awwwwards.</b> <b>Site of the Day</b> \n${monthNames[month]} ${day} ${year}`;
 
     // debugger
-    this.printMessages(shuffleArr, title, today);
+    this.printMessages(title, today);
   }
 
   printMessages(mediaObject, title, today) {
     bot.sendMessage(process.env.COMMUNITYID, `${today} ${this.constructor.siteUrl}`, {parse_mode: 'HTML'});
-    bot.sendMediaGroup(process.env.COMMUNITYID, mediaObject);
+    //bot.sendMediaGroup(process.env.COMMUNITYID, mediaObject);
   }
 }
 
