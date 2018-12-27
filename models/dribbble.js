@@ -106,16 +106,30 @@ class Dribbble {
   }
 
   printMessages(shotsArray) {
-    if (!shotsArray.length) return;
+		let randomInteger = ((min, max) => {
+			min = 1;
+			max = 10;
+			var rand = min - 0.5 + Math.random() * (max - min + 1)
+			rand = Math.round(rand);
+			return rand * 1000;
+		})();
 
+		if (!shotsArray.length) return;
+		/*bot.sendMediaGroup(process.env.COMMUNITYID, [{
+			type: "photo",
+			media: i.image,
+			caption: `<b>Dribbble Recent Shots</b>\n<a href="https://dribbble.com${i.path}">${i.title}</a>`,
+			parse_mode: 'HTML'
+		}]);*/
     for (var i of shotsArray) {
-      bot.sendMediaGroup(process.env.COMMUNITYID, [{
-        type: "photo",
-        media: i.image,
-        caption: `<b>Dribbble Recent Shots</b>\n<a href="https://dribbble.com${i.path}">${i.title}</a>`,
-        parse_mode: 'HTML'
-      }
-      ])
+      setTimeout(() => {
+				bot.sendMediaGroup(process.env.COMMUNITYID, [{
+					type: "photo",
+					media: i.image,
+					caption: `<b>Dribbble Recent Shots</b>\n<a href="https://dribbble.com${i.path}">${i.title}</a>`,
+					parse_mode: 'HTML'
+				}]);
+			}, 2000);
     }
   }
 }

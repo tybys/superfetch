@@ -14,7 +14,7 @@ if (process.env.NODE_ENV == 'production') {
   const tasks = [
     {name: "dribbble", mask: "0 0 10-23 * * *", process: dribbbleJob},
     {name: "uplabs", mask: "0 0 10-23 * * *", process: uplabsJob},
-    {name: "uplabs", mask: "0 30 15 * * *", process: awwwardsJob}
+    {name: "awwwards", mask: "0 30 15 * * *", process: awwwardsJob}
   ];
 }
 
@@ -121,4 +121,4 @@ nexmo.message.sendSms('multifetch', '', text)*/
 //TODO: каждый день сохранять во временном файле сайт от эвордс, периодически показывать его в течении дня
 //TODO: присылать сообщения с небольшой задержкой, рандом от 3 до 10 секунд
 //TODO: убрать 3 одинаковые функции, унифицировать создание новых инстасов
-new Awwwards()
+new Dribbble()

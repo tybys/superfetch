@@ -13,6 +13,7 @@ class Awwwards {
   constructor() {
     this.getSiteUrl();
     this.siteUrl = '';
+    this.paths = null;
   }
 
   static junk() {
@@ -60,9 +61,13 @@ class Awwwards {
         let imagepath = xpath.select("//div[contains(@id, 'screenshots')]//img", newDom);
         let videopath = xpath.select("//div[contains(@class, 'box-page-related')]//video//source", newDom);
 
-        this.saveFiles(videopath).then(() => {
+
+        /*this.saveFiles(videopath).then(() => {
 					this.parseMedia(imagepath, title);
-        });
+        });*/
+
+        this.constructor.paths = videopath.map((item) => item.attributes[1].value);
+				this.parseMedia(imagepath, title);
       }).on("error", (err) => {
 
         console.log("Error: " + err.message);
@@ -70,20 +75,22 @@ class Awwwards {
     })
   }
 
-  async saveFiles(paths, cb) {
-		await paths.forEach((item, index) => {
-      let viduri = item.attributes[1].value;
-			let options = {
-				directory: process.cwd()+"/downloads/",
-				filename: `vid_${index}.mp4`
-			};
+  saveFiles(paths, cb) {
+		return new Promise((resolve, reject) => {
+			paths.forEach((item, index) => {
+				let viduri = item.attributes[1].value;
+				let options = {
+					directory: process.cwd()+"/downloads/",
+					filename: `vid_${index}.mp4`
+				};
 
-			download(viduri, options, function(err){
-				if (err) throw err;
+				download(viduri, options, function(err){
+					if (err) reject(err);
 
-				console.log("meow")
+					resolve("meow");
+				});
 			});
-		});
+    });
 
 		//cb();
   }
@@ -100,22 +107,39 @@ class Awwwards {
       });
     }*/
     let fs = require('fs')
-    //let files = fs.readFileSync(process.cwd()+'/downloads/', {flag: 'r'});
-    debugger
+    /*let videos = fs.readdirSync(process.cwd()+'/downloads/', {}, (err, files) => files);
+    videos = videos.map((item, index) => {
+      return {
+				type: "video",
+				media: item,
+				caption: '',
+				parse_mode: 'HTML'
+      }
+    });*/
+
     let _date = new Date();
     let month = _date.getMonth();
     let day = _date.getDate();
     let year = _date.getFullYear();
     const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     const today = ` <b>awwwwards.</b> <b>Site of the Day</b> \n${monthNames[month]} ${day} ${year}`;
+    let videos = this.constructor.paths.map((item) => {
+    	return {
+				type: "video",
+				media: item,
+				caption: '',
+				parse_mode: 'HTML'
+			}
+		});
 
-    // debugger
-    this.printMessages(title, today);
+//    debugger;
+    this.printMessages(videos, title, today);
   }
 
   printMessages(mediaObject, title, today) {
+    // debugger
     bot.sendMessage(process.env.COMMUNITYID, `${today} ${this.constructor.siteUrl}`, {parse_mode: 'HTML'});
-    //bot.sendMediaGroup(process.env.COMMUNITYID, mediaObject);
+    bot.sendMediaGroup(process.env.COMMUNITYID, mediaObject);
   }
 }
 
