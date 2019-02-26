@@ -20,8 +20,8 @@ if (process.env.NODE_ENV == 'production') {
 
 if (process.env.NODE_ENV == 'debug') {
     tasks = [
-        {name: "Dribbble", mask: "0 */1 * * * *", process: dribbbleJob},
-        {name: "Uplabs", mask: "0 */1 * * * *", process: uplabsJob}
+        {name: "Dribbble", mask: "*/2 * * * *", process: dribbbleJob},
+        {name: "Uplabs", mask: "*/2 * * * *", process: uplabsJob}
         //,{name: "awwwards", mask: "0 */3 * * * *", process: awwwardsJob}
     ];
 }
@@ -121,4 +121,3 @@ nexmo.message.sendSms('multifetch', '', text)*/
 //TODO: каждый день сохранять во временном файле сайт от эвордс, периодически показывать его в течении дня
 //TODO: присылать сообщения с небольшой задержкой, рандом от 3 до 10 секунд
 //TODO: убрать 3 одинаковые функции, унифицировать создание новых инстасов
-new Dribbble()

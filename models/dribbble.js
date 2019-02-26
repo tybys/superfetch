@@ -26,7 +26,7 @@ class Dribbble {
       resp.pipe(process.stdout);
 
     }).on("error", (err) => {
-      console.log("Error: " + err.message);
+      // console.log("Error: " + err.message);
     });
   }
 
@@ -121,15 +121,15 @@ class Dribbble {
 			caption: `<b>Dribbble Recent Shots</b>\n<a href="https://dribbble.com${i.path}">${i.title}</a>`,
 			parse_mode: 'HTML'
 		}]);*/
+		// debugger
     for (var i of shotsArray) {
-      setTimeout(() => {
+
 				bot.sendMediaGroup(process.env.COMMUNITYID, [{
 					type: "photo",
 					media: i.image,
 					caption: `<b>Dribbble Recent Shots</b>\n<a href="https://dribbble.com${i.path}">${i.title}</a>`,
 					parse_mode: 'HTML'
 				}]);
-			}, 2000);
     }
   }
 }
